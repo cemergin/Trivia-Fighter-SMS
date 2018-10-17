@@ -57,6 +57,7 @@ get "/sms/incoming" do
   body = params[:Body] || ""
   if session["str"].nil?
     session["str"] = ""
+  end  
   message, media = "hello" + session["str"], nil
   responce = send_message(message,media)
   session["str"] = body
