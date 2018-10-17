@@ -279,21 +279,12 @@ def currentscore
 end
 
 def endgame
-
+  return "Final Score: " + session["score"].to_s + "\nCorrect answer was " + session["answer"] + "\nIf you want more just type 'New Game' again and maybe you will get lucky this time!"
 end
 
 def leaderboard
   return "Here's the list you've been waiting for! \n1: Johnny Restless 15000 points \n2: John Doe 12500 points \n3: Jane Doe 11000 points \n4: Michael Scott 10000 points \n5: Muffin Man 9500 points. \nGet your game on to put your name on the list!"
 end
-
-# quest = get_question(1,$category.sample,$difficulty[0],"multiple")
-# setQuestion(get_query(quest))
-# setChoices(get_choices(quest))
-# setAnswer(get_answer(quest))
-# k = session["choices"].index(session["answer"])
-# # setAnswer(determine_answer(session["answer"],session["choices"]))
-# "Ans: " + index_to_choi(k) + "::" + session["answer"].to_s + " " + "Choi: " + session["choices"].to_s
-# # "Question: " + session["question"] + "\nA - " + session["choices"][0] + "\nB - " + session["choices"][1] + "\nC - " + session["choices"][2] + "\nD - " + session["choices"][3] + " Answer::" + session["answer"].to_s
 
 def newanswer(ans)
   if session["game"] == true
@@ -337,14 +328,8 @@ def newquestion
 end
 
 def repeatquestion
-
+    return "Question: " + session["question"] + "\nA - " + session["choices"][0] + "\nB - " + session["choices"][1] + "\nC - " + session["choices"][2] + "\nD - " + session["choices"][3]
 end
-
-# message, media = determineResponce(analyzed), nil
-# responce = send_message(message,media)
-# content_type 'text/xml'
-# responce
-
 
 def rules
   return "Rules of Trivia Fighter is pretty simple.\nJust text 'Start Game' to start a new game or text 'Leaderboard' to hear more about the legendary trivia fighters!"
