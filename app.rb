@@ -44,9 +44,20 @@ get "/" do
 end
 
 get "/test" do
-  response = api.text_request "Rules"
-  getMessage(response).to_s
+  response = api.text_request "Answer A"
+  ans = getAnswer(response)
   #getParameters(response).to_s + " " + getIntentName(response).to_s + " " + getName(response)
+  k = session["choices"].index(session["answer"])
+  ind = index_to_choi(k)
+  if ind == ans
+    increaseScore(100)
+    setQLoad(false)
+    "Correct Answer!\nCurrent Score:" + session["score"].to_s + "\nType 'Next Question' to continue!"
+  else
+    message = "Incorrect Answer!\nFinal Score: " + session["score"].to_s + "\nCorrect answer was " + session["answer"] + "\nIf you want more just type 'New Game' again and maybe you will get lucky this time!"
+    resetGame()
+    message
+  end
 end
 
 get "/state" do
@@ -56,7 +67,7 @@ get "/state" do
   setAnswer(get_answer(quest))
   k = session["choices"].index(session["answer"])
   ind = index_to_choi(k)
-  ind
+  session["question"] + session["choices"].to_s
 end
 
 
@@ -291,10 +302,10 @@ def newanswer(ans)
       ind = index_to_choi(k)
       if ind == ans
         increaseScore(100)
-        setQload(false)
-        return "Correct Answer!\nCurrent Score:" + session["score"].to_s + "\nType 'Next Question' to continue!"
+        setQLoad(false)
+        return "Correct Answer!\nCurrent Score: " + session["score"].to_s + "\nType 'Next Question' to continue!"
       else
-        message = "Incorrect Answer!\nFinal Score:" + session["score"].to_s + "\nCorrect answer was" + session["answer"] + "\nIf you want more just type 'New Game' again and maybe you will get lucky this time!"
+        message = "Incorrect Answer!\nFinal Score: " + session["score"].to_s + "\nCorrect answer was " + session["answer"] + "\nIf you want more just type 'New Game' again and maybe you will get lucky this time!"
         resetGame()
         return message
       end
@@ -378,11 +389,11 @@ def setQLoad(bool)
 end
 
 def increaseScore(scr)
-  if (!scr.is_a?(Integer)) || points <= 0
+  if (!scr.is_a?(Integer)) || scr <= 0
     puts "increaseScore failed: Incorrect scr"
     return
   else
-    session["score"] = session["score"] + points
+    session["score"] = session["score"] + scr
     return session["score"]
   end
 end
