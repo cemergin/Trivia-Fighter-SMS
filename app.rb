@@ -240,7 +240,7 @@ def determineResponce(body)
   when "NEWQUESTION"
     message = newquestion()
   when "NEWANSWER"
-    message = newanswer()
+    message = newanswer(getAnswer(body).to_s)
   when "ENDGAME"
     message = endgame()
   when "REPEATQUESTION"
@@ -272,7 +272,20 @@ def leaderboard
 end
 
 def newanswer(ans)
-
+  if session["game"] == true
+    if session["qload"] == true
+      if session["answer"] == ans
+        increaseScore(100)
+        return "Correct Answer!\nCurrent Score:" + session["score"].to_s
+      else
+        return "Incorrect Answer!\nFinal Score:" + session["score"].to_s
+      end
+    else
+      return "It seems like you haven't asked for youe next challange yet!\nText 'Next Question' to face tour destiny!"
+    end
+  else
+    return "You haven't started a game yet!\nSay 'Start Game' first to face your trivia demons."
+  end
 end
 
 def newquestion
