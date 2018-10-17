@@ -188,7 +188,7 @@ def determineResponce(body)
 end
 
 def default
-  return "This is Trivia Fighter Turbo"
+  return "Welcome to Trivia Fighter Turbo!\nIf you don't know what to do just text 'Rules' to get yourself started."
 end
 
 def currentscore
@@ -222,10 +222,7 @@ end
 
 
 def rules
-  message, media = "Rules of Trivia Fighter is pretty simple. Just text 'Start Game' to start a new game or text 'Leaderboard' to hear more about the legendary trivia fighters!", nil
-  responce = send_message(message,media)
-  content_type 'text/xml'
-  responce
+  return "Rules of Trivia Fighter is pretty simple.\nJust text 'Start Game' to start a new game or text 'Leaderboard' to hear more about the legendary trivia fighters!"
 end
 
 def setname(str)
@@ -233,7 +230,13 @@ def setname(str)
 end
 
 def startgame
-
+  if session["game"] == false
+    resetGame()
+    session["game"] == true
+    return "Welcome to Trivia Fighter, where the wise live to fight another day and trivia legends are born!\nYou just took your first step to greatness. Text 'New Question' to face your next challenge or 'Repeat question' to hear a question once again.\nTo test your judgement, just say 'The answer is' followed by your letter of choice: A, B, C or D."
+  else
+    return "It looks like you are already on a Trivia Fighter quest.\nEither face your new challenge by saying 'Next Question' or give up by saying 'End Game'.\nYou can check your current score by simply saying 'Current Score'"
+  end
 end
 
 #Session Functions
