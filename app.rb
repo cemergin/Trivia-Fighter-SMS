@@ -50,11 +50,13 @@ get "/test" do
 end
 
 get "/state" do
-  initializeSessions()
-  "Sessions initialized"
+  analyzed = api.text_request "Leaderboard"
+  responce = determineResponce(analyzed)
+  responce.to_s
 end
 
 get "/sms/incoming" do
+  initializeSessions()
   body = params[:Body] || ""
   analyzed = api.text_request(body) || ""
   message, media = determineResponce(analyzed), nil
@@ -157,38 +159,28 @@ end
 
 #Intent Functions
 
-$leaderboard =
-
 def determineResponce(body)
+  message = ""
   intentName = getIntentName(body)
   case intentName
   when "RULES"
     message = rules()
-  return
   when "LEADERBOARD"
     message = leaderboard()
-  return
   when "STARTGAME"
     message = startgame()
-  return
   when "NEWQUESTION"
     message = newquestion()
-  return
   when "NEWANSWER"
     message = newanswer()
-  return
   when "ENDGAME"
     message = endgame()
-  return
   when "REPEATQUESTION"
     message = repeatquestion()
-  return
   when "SETNAME"
     message = setname()
-  return
   when "CURRENTSCORE"
     message = currentscore()
-  return
   else
     message = default()
   end
@@ -196,7 +188,7 @@ def determineResponce(body)
 end
 
 def default
-
+  return "This is Trivia Fighter Turbo"
 end
 
 def currentscore
