@@ -57,11 +57,10 @@ end
 get "/sms/incoming" do
   body = params[:Body] || ""
   analyzed = api.text_request(body) || ""
-  determineResponce(analyzed)
-  # message, media = determineResponce(analyzed), nil
-  # responce = send_message(message,media)
-  # content_type 'text/xml'
-  # responce
+  message, media = determineResponce(analyzed), nil
+  responce = send_message(message,media)
+  content_type 'text/xml'
+  responce
 end
 
 # Sample Responces
@@ -164,34 +163,34 @@ def determineResponce(body)
   intentName = getIntentName(body)
   case intentName
   when "RULES"
-    rules()
+    message = rules()
   return
   when "LEADERBOARD"
-    leaderboard()
+    message = leaderboard()
   return
   when "STARTGAME"
-    startgame()
+    message = startgame()
   return
   when "NEWQUESTION"
-    newquestion()
+    message = newquestion()
   return
   when "NEWANSWER"
-    newanswer()
+    message = newanswer()
   return
   when "ENDGAME"
-    endgame()
+    message = endgame()
   return
   when "REPEATQUESTION"
-    repeatquestion()
+    message = repeatquestion()
   return
   when "SETNAME"
-    setname()
+    message = setname()
   return
   when "CURRENTSCORE"
-    currentscore()
+    message = currentscore()
   return
   else
-    default()
+    message = default()
   end
 end
 
@@ -208,20 +207,7 @@ def endgame
 end
 
 def leaderboard
-  message, media = "Here's the list you've all been waiting for!", nil
-  responce = send_message(message,media)
-  message, media = "1 - Johnny Restless 15000 points", nil
-  responce = send_message(message,media)
-  message, media = "2 - Jane Doe 11000 points", nil
-  responce = send_message(message,media)
-  message, media = "3 - Michael Scott 10000 points, Muffin Man 9500 points. Get your game on to put your name on the list!", nil
-  responce = send_message(message,media)
-  message, media = "4 - Muffin Man 9500 points. Get your game on to put your name on the list!", nil
-  responce = send_message(message,media)
-  message, media = "5 - Muffin Man 9500 points. Get your game on to put your name on the list!", nil
-  responce = send_message(message,media)
-  content_type 'text/xml'
-  responce
+  return "Here's the list you've been waiting for! \n1: Johnny Restless 15000 points \n2: John Doe 12500 points \n3: Jane Doe 11000 points \n4: Michael Scott 10000 points \n5: Muffin Man 9500 points. \nGet your game on to put your name on the list!"
 end
 
 def newanswer(ans)
