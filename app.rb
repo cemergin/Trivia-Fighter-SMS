@@ -50,14 +50,13 @@ get "/test" do
 end
 
 get "/state" do
-  # quest = get_question(1,$category.sample,$difficulty[0],"multiple")
-  # setQuestion(get_query(quest))
-  # setChoices(get_choices(quest))
-  # setAnswer(get_answer(quest))
-  # k = session["choices"].index(session["answer"])
-  # # setAnswer(determine_answer(session["answer"],session["choices"]))
-  # "Ans: " + index_to_choi(k) + "::" + session["answer"].to_s + " " + "Choi: " + session["choices"].to_s
-  # # "Question: " + session["question"] + "\nA - " + session["choices"][0] + "\nB - " + session["choices"][1] + "\nC - " + session["choices"][2] + "\nD - " + session["choices"][3] + " Answer::" + session["answer"].to_s
+  quest = get_question(1,$category.sample,$difficulty[0],"multiple")
+  setQuestion(get_query(quest))
+  setChoices(get_choices(quest))
+  setAnswer(get_answer(quest))
+  k = session["choices"].index(session["answer"])
+  ind = index_to_choi(k)
+  ind
 end
 
 
@@ -293,7 +292,7 @@ def newanswer(ans)
       if ind == ans
         increaseScore(100)
         setQload(false)
-        return "Correct Answer!\nCurrent Score:" + session["score"].to_s
+        return "Correct Answer!\nCurrent Score:" + session["score"].to_s + "\nType 'Next Question' to continue!"
       else
         message = "Incorrect Answer!\nFinal Score:" + session["score"].to_s + "\nCorrect answer was" + session["answer"] + "\nIf you want more just type 'New Game' again and maybe you will get lucky this time!"
         resetGame()
