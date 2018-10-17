@@ -157,6 +157,72 @@ def get_question(amount, cat, diff, typ)
   end
 end
 
+def get_query(question)
+    if question.nil? || question.empty?
+      return nil
+    else
+      que = question["results"][0]["question"]
+      if que.nil?
+        return nil
+      else
+      return que
+      end
+    end
+  end
+
+def get_answer(question)
+    if question.nil? || question.empty?
+      return nil
+    else
+      ans = question["results"][0]["correct_answer"]
+      if ans.nil?
+        return nil
+      else
+      return ans
+      end
+    end
+end
+
+def get_choices(question)
+  choi = []
+  if question.nil? || question.empty?
+    return nil
+  else
+    choi.push(question["results"][0]["correct_answer"])
+    question["results"][0]["incorrect_answers"].each do |item|
+      choi.push(item)
+    end
+    if choi.nil? || choi.empty?
+      return nil
+    else
+    return choi.shuffle
+    end
+  end
+end
+
+def determine_answer(ans,choi)
+  for i in 0..3
+    if choi[i] == ans
+      return i_to_ans(i)
+    end
+  end
+end
+
+def i_to_ans(i)
+  case i
+  when 0
+    return "A"
+  when 1
+    return "B"
+  when 2
+    return "C"
+  when 3
+    return "D"
+  else
+    return "E"
+  end
+end
+
 #Intent Functions
 
 def determineResponce(body)
@@ -192,7 +258,7 @@ def default
 end
 
 def currentscore
-
+  return "Current Score: " + session["score"].to_s
 end
 
 def endgame
@@ -215,7 +281,11 @@ def newquestion
       return "It appears to me that you haven't answered your previous question yet!\nAnswer that the question at hand first, to face a new challenge.\nTime is running out!"
     else
       setQLoad(true)
-      return "New Question"
+      quest = get_question(1,$category.sample,$difficulty[0],"multiple")
+      setQuestion(get_query(quest))
+      setChoices(get_choices(quest))
+      setAnswer(determine_answer(session["answer"],session["choices"]))
+      return "Question: " + session["question"] + "\nA - " + session["choices"][0] + "\nB - " + session["choices"][1] + "\nC - " + session["choices"][2] + "\nD - " + session["choices"][3]
     end
   else
     return "You haven't started a game yet!\nSay 'Start Game' first to face your trivia demons."
