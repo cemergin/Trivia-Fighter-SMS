@@ -208,7 +208,18 @@ def newanswer(ans)
 end
 
 def newquestion
-
+  if session["game"] == true
+    #Game is in play
+    if session["qload"] == true
+      #Already have question
+      return "It appears to me that you haven't answered your previous question yet!\nAnswer that the question at hand first, to face a new challenge.\nTime is running out!"
+    else
+      setQLoad(true)
+      return "New Question"
+    end
+  else
+    return "You haven't started a game yet!\nSay 'Start Game' first to face your trivia demons."
+  end
 end
 
 def repeatquestion
@@ -252,7 +263,7 @@ end
 def setQLoad(bool)
   if !!bool == bool
     if session["game"] == true
-    session["game"] = bool
+    session["qload"] = bool
     else
       puts "setQload Failed: session['game'] = false"
       return
