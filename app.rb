@@ -279,6 +279,7 @@ def newanswer(ans)
         return "Correct Answer!\nCurrent Score:" + session["score"].to_s
       else
         return "Incorrect Answer!\nFinal Score:" + session["score"].to_s
+        resetGame()
       end
     else
       return "It seems like you haven't asked for youe next challange yet!\nText 'Next Question' to face tour destiny!"
