@@ -192,6 +192,7 @@ def determineResponce(body)
   else
     message = default()
   end
+  return message
 end
 
 def default
