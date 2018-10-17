@@ -55,9 +55,11 @@ end
 
 get "/sms/incoming" do
   body = params[:Body] || ""
-  session["str"] = body || ""
+  if session["str"].nil?
+    session["str"] = ""
   message, media = "hello" + session["str"], nil
   responce = send_message(message,media)
+  session["str"] = body
   content_type 'text/xml'
   responce
 end
