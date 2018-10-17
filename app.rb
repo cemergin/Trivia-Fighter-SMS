@@ -50,12 +50,17 @@ get "/test" do
 end
 
 get "/state" do
-  quest = get_question(1,$category.sample,$difficulty[0],"multiple")
-  setQuestion(get_query(quest))
-  setChoices(get_choices(quest))
-  setAnswer(determine_answer(session["answer"],session["choices"]))
-  "Question: " + session["question"] + "\nA - " + session["choices"][0] + "\nB - " + session["choices"][1] + "\nC - " + session["choices"][2] + "\nD - " + session["choices"][3]
+  # quest = get_question(1,$category.sample,$difficulty[0],"multiple")
+  # setQuestion(get_query(quest))
+  # setChoices(get_choices(quest))
+  # setAnswer(get_answer(quest))
+  # k = session["choices"].index(session["answer"])
+  # # setAnswer(determine_answer(session["answer"],session["choices"]))
+  # "Ans: " + index_to_choi(k) + "::" + session["answer"].to_s + " " + "Choi: " + session["choices"].to_s
+  # # "Question: " + session["question"] + "\nA - " + session["choices"][0] + "\nB - " + session["choices"][1] + "\nC - " + session["choices"][2] + "\nD - " + session["choices"][3] + " Answer::" + session["answer"].to_s
 end
+
+
 
 get "/sms/incoming" do
   initializeSessions()
@@ -205,26 +210,26 @@ end
 def determine_answer(ans,choi)
   for i in 0..3
     if choi[i] == ans
+      puts i.to_s + " " + choi[i]
       return i_to_ans(i)
     end
   end
 end
 
-def i_to_ans(i)
-  case i
+def index_to_choi(int)
+  case int
   when 0
-    return "A"
+    return 'A'
   when 1
-    return "B"
+    return 'B'
   when 2
-    return "C"
+    return 'C'
   when 3
-    return "D"
+    return 'D'
   else
-    return "E"
+    return 'E'
   end
 end
-
 #Intent Functions
 
 def determineResponce(body)
@@ -271,10 +276,21 @@ def leaderboard
   return "Here's the list you've been waiting for! \n1: Johnny Restless 15000 points \n2: John Doe 12500 points \n3: Jane Doe 11000 points \n4: Michael Scott 10000 points \n5: Muffin Man 9500 points. \nGet your game on to put your name on the list!"
 end
 
+# quest = get_question(1,$category.sample,$difficulty[0],"multiple")
+# setQuestion(get_query(quest))
+# setChoices(get_choices(quest))
+# setAnswer(get_answer(quest))
+# k = session["choices"].index(session["answer"])
+# # setAnswer(determine_answer(session["answer"],session["choices"]))
+# "Ans: " + index_to_choi(k) + "::" + session["answer"].to_s + " " + "Choi: " + session["choices"].to_s
+# # "Question: " + session["question"] + "\nA - " + session["choices"][0] + "\nB - " + session["choices"][1] + "\nC - " + session["choices"][2] + "\nD - " + session["choices"][3] + " Answer::" + session["answer"].to_s
+
 def newanswer(ans)
   if session["game"] == true
     if session["qload"] == true
-      if session["answer"] == ans
+      k = session["choices"].index(session["answer"])
+      ind = index_to_choi(k)
+      if ind == ans
         increaseScore(100)
         setQload(false)
         return "Correct Answer!\nCurrent Score:" + session["score"].to_s
@@ -302,7 +318,7 @@ def newquestion
       quest = get_question(1,$category.sample,$difficulty[0],"multiple")
       setQuestion(get_query(quest))
       setChoices(get_choices(quest))
-      setAnswer(determine_answer(session["answer"],session["choices"]))
+      setAnswer(get_answer(quest))
       return "Question: " + session["question"] + "\nA - " + session["choices"][0] + "\nB - " + session["choices"][1] + "\nC - " + session["choices"][2] + "\nD - " + session["choices"][3]
     end
   else
@@ -383,8 +399,9 @@ def setPlayerName(str)
 end
 
 def setAnswer(ans)
-  if ans != "A" || ans != "B" || ans != "C" || ans != "D" || !ans.is_a(String)
+  if !ans.is_a?(String)
     puts "setAnswer Failed: Incorrect ans"
+    session["answer"] = "A"
     return
   else
     session["answer"] = ans
