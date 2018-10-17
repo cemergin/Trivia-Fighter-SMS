@@ -57,10 +57,11 @@ end
 get "/sms/incoming" do
   body = params[:Body] || ""
   analyzed = api.text_request(body) || ""
-  message, media = determineResponce(analyzed), nil
-  responce = send_message(message,media)
-  content_type 'text/xml'
-  responce
+  determineResponce(analyzed)
+  # message, media = determineResponce(analyzed), nil
+  # responce = send_message(message,media)
+  # content_type 'text/xml'
+  # responce
 end
 
 # Sample Responces
@@ -161,39 +162,37 @@ $leaderboard =
 
 def determineResponce(body)
   intentName = getIntentName(body)
-  return intentName
-  # case intentName
-  # when "RULES"
-  #   a = rules()
-  # return
-  # when "LEADERBOARD"
-  #   a = leaderboard()
-  # return
-  # when "STARTGAME"
-  #   a = startgame()
-  # return
-  # when "NEWQUESTION"
-  #   a = newquestion()
-  # return
-  # when "NEWANSWER"
-  #   a = newanswer()
-  # return
-  # when "ENDGAME"
-  #   a = endgame()
-  # return
-  # when "REPEATQUESTION"
-  #   a = repeatquestion()
-  # return
-  # when "SETNAME"
-  #   a = setname()
-  # return
-  # when "CURRENTSCORE"
-  #   a = currentscore()
-  # return
-  # else
-  #   a = default()
-  # end
-  #return a
+  case intentName
+  when "RULES"
+    rules()
+  return
+  when "LEADERBOARD"
+    leaderboard()
+  return
+  when "STARTGAME"
+    startgame()
+  return
+  when "NEWQUESTION"
+    newquestion()
+  return
+  when "NEWANSWER"
+    newanswer()
+  return
+  when "ENDGAME"
+    endgame()
+  return
+  when "REPEATQUESTION"
+    repeatquestion()
+  return
+  when "SETNAME"
+    setname()
+  return
+  when "CURRENTSCORE"
+    currentscore()
+  return
+  else
+    default()
+  end
 end
 
 def default
@@ -209,7 +208,20 @@ def endgame
 end
 
 def leaderboard
-  return
+  message, media = "Here's the list you've all been waiting for!", nil
+  responce = send_message(message,media)
+  message, media = "1 - Johnny Restless 15000 points", nil
+  responce = send_message(message,media)
+  message, media = "2 - Jane Doe 11000 points", nil
+  responce = send_message(message,media)
+  message, media = "3 - Michael Scott 10000 points, Muffin Man 9500 points. Get your game on to put your name on the list!", nil
+  responce = send_message(message,media)
+  message, media = "4 - Muffin Man 9500 points. Get your game on to put your name on the list!", nil
+  responce = send_message(message,media)
+  message, media = "5 - Muffin Man 9500 points. Get your game on to put your name on the list!", nil
+  responce = send_message(message,media)
+  content_type 'text/xml'
+  responce
 end
 
 def newanswer(ans)
@@ -224,8 +236,17 @@ def repeatquestion
 
 end
 
+# message, media = determineResponce(analyzed), nil
+# responce = send_message(message,media)
+# content_type 'text/xml'
+# responce
+
+
 def rules
-  return "Rules of Trivia Fighter is pretty simple. Just text 'Start Game' to start a new game or text 'Leaderboard' to hear more about the legendary trivia fighters!"
+  message, media = "Rules of Trivia Fighter is pretty simple. Just text 'Start Game' to start a new game or text 'Leaderboard' to hear more about the legendary trivia fighters!", nil
+  responce = send_message(message,media)
+  content_type 'text/xml'
+  responce
 end
 
 def setname(str)
