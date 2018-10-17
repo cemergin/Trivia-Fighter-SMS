@@ -50,9 +50,11 @@ get "/test" do
 end
 
 get "/state" do
-  analyzed = api.text_request "Leaderboard"
-  responce = determineResponce(analyzed)
-  responce.to_s
+  quest = get_question(1,$category.sample,$difficulty[0],"multiple")
+  setQuestion(get_query(quest))
+  setChoices(get_choices(quest))
+  setAnswer(determine_answer(session["answer"],session["choices"]))
+  "Question: " + session["question"] + "\nA - " + session["choices"][0] + "\nB - " + session["choices"][1] + "\nC - " + session["choices"][2] + "\nD - " + session["choices"][3]
 end
 
 get "/sms/incoming" do
@@ -375,7 +377,7 @@ def setAnswer(ans)
 end
 
 def setChoices(chs)
-  if quest.is_a?(Array)
+  if chs.is_a?(Array)
     session["choices"] = chs
     return session["choices"]
   else
