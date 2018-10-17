@@ -18,6 +18,8 @@ api = ApiAiRuby::Client.new(
     :client_access_token => ENV["CLIENT_ACCESS_TOKEN"]
 )
 
+#{:id=>"61b87aab-fb91-4a0b-b154-d1e3184946b1", :timestamp=>"2018-10-17T07:42:14.981Z", :lang=>"en", :result=>{:source=>"agent", :resolvedQuery=>"4", :action=>"", :actionIncomplete=>false, :parameters=>{:multiple=>"D"}, :contexts=>[], :metadata=>{:intentId=>"1ecb2512-a5ac-4333-97bd-274ba045c2f9", :webhookUsed=>"false", :webhookForSlotFillingUsed=>"false", :isFallbackIntent=>"false", :intentName=>"NEWANSWER"}, :fulfillment=>{:speech=>"", :messages=>[{:type=>0, :speech=>""}]}, :score=>1.0}, :status=>{:code=>200, :errorType=>"success"}, :sessionId=>"6c059abd-d21a-46db-8e77-c067348781eb"}
+
 #Gets text and media string to send a message through Twilio
 def send_message(text,media)
   if text.nil? || text == ""
@@ -43,13 +45,18 @@ get "/" do
 end
 
 get "/test" do
-  response = api.text_request 'hello!'
+  response = api.text_request "4"
   response.to_s
+end
+
+get "/state" do
+
 end
 
 get "/sms/incoming" do
   body = params[:Body] || ""
-  message, media = "hello", nil
+  session["str"] = body || ""
+  message, media = "hello" + session["str"], nil
   responce = send_message(message,media)
   content_type 'text/xml'
   responce
