@@ -279,7 +279,13 @@ def currentscore
 end
 
 def endgame
-  return "Final Score: " + session["score"].to_s + "\nCorrect answer was " + session["answer"] + "\nIf you want more just type 'New Game' again and maybe you will get lucky this time!"
+  if session["game"] == true
+    message = "Final Score: " + session["score"].to_s + "\nCorrect answer was " + session["answer"] + "\nIf you want more just type 'New Game' again and maybe you will get lucky this time!"
+    resetGame()
+    return message
+  else
+    return "You can't quit if without even trying.\nA legendary quest awaits!\nReply 'Start Game' to get started."
+  end
 end
 
 def leaderboard
