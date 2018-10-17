@@ -1,20 +1,22 @@
 require "sinatra"
 require 'sinatra/reloader' if development?
-
+require "did_you_mean" if development?
+require 'giphy'
+require 'httparty'
 require 'twilio-ruby'
 require 'api-ai-ruby'
 
 enable :sessions
 
-@client = Twilio::REST::Client.new ENV["TWILIO_ACCOUNT_SID"], ENV["TWILIO_AUTH_TOKEN"]
-api = ApiAiRuby::Client.new(
-    :client_access_token => ENV["CLIENT_ACCESS_TOKEN"]
-)
-
 configure :development do
   require 'dotenv'
   Dotenv.load
 end
+
+@client = Twilio::REST::Client.new ENV["TWILIO_ACCOUNT_SID"], ENV["TWILIO_AUTH_TOKEN"]
+api = ApiAiRuby::Client.new(
+    :client_access_token => ENV["CLIENT_ACCESS_TOKEN"]
+)
 
 #Gets text and media string to send a message through Twilio
 def send_message(text,media)
