@@ -178,7 +178,7 @@ def determineResponce(body)
   when "REPEATQUESTION"
     message = repeatquestion()
   when "SETNAME"
-    message = setname()
+    message = setname(getName(body).to_s)
   when "CURRENTSCORE"
     message = currentscore()
   else
@@ -237,13 +237,14 @@ def rules
 end
 
 def setname(str)
-
+  setPlayerName(str)
+  return "Player name set to " + session["name"]
 end
 
 def startgame
   if session["game"] == false
     resetGame()
-    session["game"] == true
+    setGameState(true)
     return "Welcome to Trivia Fighter, where the wise live to fight another day and trivia legends are born!\nYou just took your first step to greatness. Text 'New Question' to face your next challenge or 'Repeat question' to hear a question once again.\nTo test your judgement, just say 'The answer is' followed by your letter of choice: A, B, C or D."
   else
     return "It looks like you are already on a Trivia Fighter quest.\nEither face your new challenge by saying 'Next Question' or give up by saying 'End Game'.\nYou can check your current score by simply saying 'Current Score'"
