@@ -276,10 +276,12 @@ def newanswer(ans)
     if session["qload"] == true
       if session["answer"] == ans
         increaseScore(100)
+        setQload(false)
         return "Correct Answer!\nCurrent Score:" + session["score"].to_s
       else
-        return "Incorrect Answer!\nFinal Score:" + session["score"].to_s
+        message = "Incorrect Answer!\nFinal Score:" + session["score"].to_s + "\nCorrect answer was" + session["answer"] + "\nIf you want more just type 'New Game' again and maybe you will get lucky this time!"
         resetGame()
+        return message
       end
     else
       return "It seems like you haven't asked for youe next challange yet!\nText 'Next Question' to face tour destiny!"
