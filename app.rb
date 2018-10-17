@@ -271,25 +271,29 @@ def determineResponce(body)
 end
 
 def default
-  return "Welcome to Trivia Fighter Turbo!\nIf you don't know what to do just text 'Rules' to get yourself started."
+  return "Welcome to Trivia Fighter Turbo!\nIf you don't know what to do just text 'Rules' to learn more or text 'New Game' to challenge the cunning trivia monsters!"
 end
 
 def currentscore
-  return "Current Score: " + session["score"].to_s
+  if session["game"] == true
+    return "Current Score: " + session["score"].to_s
+  else
+    return "Crushing the trivia monsters is no easy task.\nType 'Start Game' first, to be worthy of a score"
+  end
 end
 
 def endgame
   if session["game"] == true
-    message = "Final Score: " + session["score"].to_s + "\nCorrect answer was " + session["answer"] + "\nIf you want more just type 'New Game' again and maybe you will get lucky this time!"
+    message = "Final Score: " + session["score"].to_s + "\nIf you want to play more just type 'New Game' any time and test your skills against the trivia demons!"
     resetGame()
     return message
   else
-    return "You can't quit if without even trying.\nA legendary quest awaits!\nReply 'Start Game' to get started."
+    return "You can't quit without even trying.\nA legendary quest call upon you!\nReply 'Start Game' to face the trivia demons."
   end
 end
 
 def leaderboard
-  return "Here's the list you've been waiting for! \n1: Johnny Restless 15000 points \n2: John Doe 12500 points \n3: Jane Doe 11000 points \n4: Michael Scott 10000 points \n5: Muffin Man 9500 points. \nGet your game on to put your name on the list!"
+  return "Here's the list of legendary fighters who overpowered the trivia beasts like no other! \n1: Johnny Restless 15000 points \n2: John Doe 12500 points \n3: Jane Doe 11000 points \n4: Michael Scott 10000 points \n5: Muffin Man 9500 points. \nEmbark on your own journey to rise through the ranks!"
 end
 
 def newanswer(ans)
@@ -334,11 +338,15 @@ def newquestion
 end
 
 def repeatquestion
+  if session["game"] == true && session["qload"] == true
     return "Question: " + session["question"] + "\nA - " + session["choices"][0] + "\nB - " + session["choices"][1] + "\nC - " + session["choices"][2] + "\nD - " + session["choices"][3]
+  else
+    return "A worthy fighter knows when to accept mistakes but never cheats!\n'Type 'Next Question' to reveal your faith."
+  end
 end
 
 def rules
-  return "Rules of Trivia Fighter is pretty simple.\nJust text 'Start Game' to start a new game or text 'Leaderboard' to hear more about the legendary trivia fighters!"
+  return "Rules of Trivia Fighter are simple.\nJust text 'Start Game' if you are ready to be challenged or text 'Leaderboard' to hear more the tales legendary trivia fighters who roamed these lands before you!"
 end
 
 def setname(str)
