@@ -417,6 +417,14 @@ end
 def endgame
   if session["game"] == true
     message = "Final Score: " + session["score"].to_s + "\nIf you want to play more just type 'New Game' any time and test your skills against the trivia demons!"
+    if session["name"] == "" or session["name"].nil?
+      message = message + "\nAlso don't forget to set your name if you want to make it to the leaderboard."
+    else
+      bool = newScore(session["name"],session["score"])
+      if bool
+        message = message + "\nType 'Leaderboard' to see your name on the wall!"
+      end
+    end
     resetGame()
     return message
   else
