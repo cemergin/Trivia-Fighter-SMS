@@ -307,7 +307,7 @@ end
 
 # Question STUFF
 
-$difficulty = ["easy", "medium","hard"]
+$difficulty = ["easy", "medium"] #"hard"]
 $question_type = ["boolean","multiple"]
 $category = [9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28]
 
@@ -514,7 +514,7 @@ def newquestion
       return "It appears to me that you haven't answered your previous question yet!\nAnswer that the question at hand first, to face a new challenge.\nTime is running out!"
     else
       setQLoad(true)
-      quest = get_question(1,$category.sample,$difficulty[0],"multiple")
+      quest = get_question(1,$category.sample,$difficulty.sample,"multiple")
       setQuestion(get_query(quest))
       setChoices(get_choices(quest))
       setAnswer(get_answer(quest))
