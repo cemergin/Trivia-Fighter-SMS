@@ -425,12 +425,12 @@ def endgame
 end
 
 def leaderboard
-  a = makeLeaderArray()
   b = "Here's the list of legendary fighters who overpowered the trivia beasts like no other!"
   bs = checkBoardSize()
   if bs < 1
     b = "No warrior was worthy enough to make it to the list yet.\nType 'Start Game' to be the first to try!"
   else
+    a = makeLeaderArray()
     a.each.with_index do |item, index|
     b = b + " \n"+ (index+1).to_s + " - " + item[0] + " " + item[1] + " points"
     end
