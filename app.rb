@@ -41,6 +41,8 @@ def send_message(text,media)
   return twiml.to_s
 end
 
+# LINKS FOR TESTING
+
 get "/" do
 	404
 end
@@ -81,14 +83,15 @@ get "/tasks"  do
 end
 
 get "/destroy"  do
-  Task.delete_all
+  # Task.delete_all
+  "Destroy"
 end
 
 get "/getMinScore" do
-  addScore("Nate",400)
-  addScore("John",500)
-  addScore("Donna",200)
-  addScore("Mark",100)
+  # addScore("Nate",400)
+  # addScore("John",500)
+  # addScore("Donna",200)
+  # addScore("Mark",100)
   checkBoardSize().to_s
   #deleteLastScore()
 end
@@ -113,6 +116,17 @@ get "/hash" do
   leaderboard()
   #getMinScore().to_s
 end
+
+get "/time" do
+  initializeSessions()
+  session["time"].to_s
+end
+
+get "/diff" do
+  checkTimeDiff(session["time"],Time.new()).to_s
+end
+
+# FUNCTIONS FOR DATABASE OPERATIONS
 
 def printLeaderArray()
   #"Here's the list of legendary fighters who overpowered the trivia beasts like no other! \n1: Johnny Restless 15000 points \n2: John Doe 12500 points \n3: Jane Doe 11000 points \n4: Michael Scott 10000 points \n5: Muffin Man 9500 points. \nEmbark on your own journey to rise through the ranks!"
@@ -204,6 +218,8 @@ def newScore(name,scr)
   end
 end
 
+# MAIN
+
 get "/sms/incoming" do
   initializeSessions()
   body = params[:Body] || ""
@@ -214,15 +230,7 @@ get "/sms/incoming" do
   responce
 end
 
-# Sample Responces
-
-#{:id=>"61b87aab-fb91-4a0b-b154-d1e3184946b1", :timestamp=>"2018-10-17T07:42:14.981Z", :lang=>"en", :result=>{:source=>"agent", :resolvedQuery=>"4", :action=>"", :actionIncomplete=>false, :parameters=>{:multiple=>"D"}, :contexts=>[], :metadata=>{:intentId=>"1ecb2512-a5ac-4333-97bd-274ba045c2f9", :webhookUsed=>"false", :webhookForSlotFillingUsed=>"false", :isFallbackIntent=>"false", :intentName=>"NEWANSWER"}, :fulfillment=>{:speech=>"", :messages=>[{:type=>0, :speech=>""}]}, :score=>1.0}, :status=>{:code=>200, :errorType=>"success"}, :sessionId=>"6c059abd-d21a-46db-8e77-c067348781eb"}
-
-#{:id=>"5377d46c-5f8d-4bcd-b6ba-50bfb37b7ed4", :timestamp=>"2018-10-17T08:09:20.973Z", :lang=>"en", :result=>{:source=>"agent", :resolvedQuery=>"Name Jack", :action=>"", :actionIncomplete=>false, :parameters=>{:"given-name"=>"Jack"}, :contexts=>[], :metadata=>{:intentId=>"3e8fb6fa-5068-4b9c-ba74-09d165d55c8b", :webhookUsed=>"false", :webhookForSlotFillingUsed=>"false", :isFallbackIntent=>"false", :intentName=>"SETNAME"}, :fulfillment=>{:speech=>"", :messages=>[{:type=>0, :speech=>""}]}, :score=>1.0}, :status=>{:code=>200, :errorType=>"success"}, :sessionId=>"2506b052-d352-4cc6-863d-3d311a5ed56e"}
-
-#{:id=>"0d987e63-6663-4f5f-bb32-c2a54f8b8aae", :timestamp=>"2018-10-17T08:36:50.397Z", :lang=>"en", :result=>{:source=>"agent", :resolvedQuery=>"Rules", :action=>"", :actionIncomplete=>false, :parameters=>{}, :contexts=>[], :metadata=>{:intentId=>"b79ab3cb-6ab4-48b2-88c1-245c653c3ffc", :webhookUsed=>"false", :webhookForSlotFillingUsed=>"false", :isFallbackIntent=>"false", :intentName=>"RULES"}, :fulfillment=>{:speech=>"Rules of Trivia Fighter is pretty simple. Just say 'Start Game' to text a new game or 'Leaderboard' to read more about the legendary trivia fighters!", :messages=>[{:type=>0, :speech=>"Rules of Trivia Fighter is pretty simple. Just say 'Start Game' to text a new game or 'Leaderboard' to read more about the legendary trivia fighters!"}]}, :score=>1.0}, :status=>{:code=>200, :errorType=>"success"}, :sessionId=>"f951dfcd-3116-42e3-88a4-783a44171e73"}
-
-# Dialog Flow Stuff
+# DIALOGFLOW STUFF
 
 def getParameters(responce)
   if responce.nil? || responce.empty?
@@ -284,7 +292,20 @@ def getMessage(responce)
   end
 end
 
-# Question Stuff
+# TIME RELATED STUFF
+
+def checkTimeDiff(t_start,t_end)
+  t1 = t_start.to_i
+  t2 = t_end.to_i
+  t3 = t2 - t1
+  if t3 > 120
+    return false
+  else
+    return true
+  end
+end
+
+# Question STUFF
 
 $difficulty = ["easy", "medium","hard"]
 $question_type = ["boolean","multiple"]
@@ -372,7 +393,8 @@ def index_to_choi(int)
     return 'E'
   end
 end
-#Intent Functions
+
+# INTENT FUNCTIONS
 
 def determineResponce(body)
   message = ""
@@ -453,12 +475,18 @@ def newanswer(ans)
     if session["qload"] == true
       k = session["choices"].index(session["answer"])
       ind = index_to_choi(k)
-      if ind == ans
+      tim = checkTimeDiff(session["time"],Time.new())
+      if ind == ans && tim
         increaseScore(100)
         setQLoad(false)
         return "Correct Answer!\nCurrent Score: " + session["score"].to_s + "\nType 'Next Question' to continue!"
       else
-        message = "Incorrect Answer!\nFinal Score: " + session["score"].to_s + "\nCorrect answer was " + session["answer"] + "\nIf you want more just type 'New Game' again and maybe you will get lucky this time!"
+        message = "\nFinal Score: " + session["score"].to_s + "\nCorrect answer was " + session["answer"] + "\nIf you want more just type 'New Game' again and maybe you will get lucky this time!"
+        if !tim
+          message = "Too Late!" + message
+        else
+          message = "Incorrect Answer!" + message
+        end
         if session["name"] == "" or session["name"].nil?
           message = message + "\nAlso don't forget to set your name if you want to make it to the leaderboard."
         else
@@ -490,6 +518,7 @@ def newquestion
       setQuestion(get_query(quest))
       setChoices(get_choices(quest))
       setAnswer(get_answer(quest))
+      setTime()
       return "Question: " + session["question"] + "\nA - " + session["choices"][0] + "\nB - " + session["choices"][1] + "\nC - " + session["choices"][2] + "\nD - " + session["choices"][3]
     end
   else
@@ -518,13 +547,13 @@ def startgame
   if session["game"] == false
     resetGame()
     setGameState(true)
-    return "Welcome to Trivia Fighter, where the wise live to fight another day and trivia legends are born!\nYou just took your first step to greatness. Text 'New Question' to face your next challenge or 'Repeat question' to hear a question once again.\nTo test your judgement, just say 'The answer is' followed by your letter of choice: A, B, C or D."
+    return "Welcome to Trivia Fighter, where the wise live to fight another day and trivia legends are born!\nYou just took your first step to greatness. Text 'New Question' to face your next challenge or 'Repeat question' to hear a question once again.\nTo test your judgement, just say 'The answer is' followed by your letter of choice: A, B, C or D.\nYou will have two minutes to answer each question."
   else
     return "It looks like you are already on a Trivia Fighter quest.\nEither face your new challenge by saying 'Next Question' or give up by saying 'End Game'.\nYou can check your current score by simply saying 'Current Score'"
   end
 end
 
-#Session Functions
+# SESSION FUNCTIONS
 
 def setGameState(bool)
   if !!bool == bool
@@ -604,6 +633,10 @@ def resetGame()
   session["qload"] = false
 end
 
+def setTime()
+  session["time"] = Time.new()
+end
+
 def initializeSessions()
   if session["score"].nil?
     session["score"] = 0
@@ -625,5 +658,8 @@ def initializeSessions()
   end
   if session["qload"].nil?
     session["qload"] = false
+  end
+  if session["time"].nil?
+    session["time"] = Time.new()
   end
 end
