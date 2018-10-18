@@ -428,7 +428,7 @@ def leaderboard
   b = "Here's the list of legendary fighters who overpowered the trivia beasts like no other!"
   bs = checkBoardSize()
   if bs < 1
-    b = "No warrior was worthy enough to make it to the list yet.\nType 'Start Game' to be the first to try!"
+    b = "No warrior was worthy enough to make it to the list yet.\nType 'Start Game' to be the first to try but don't forget to set your name first by typing 'Set Name [Insert A Name Here]'!"
   else
     a = makeLeaderArray()
     a.each.with_index do |item, index|
