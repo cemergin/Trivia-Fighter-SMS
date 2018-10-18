@@ -1,4 +1,5 @@
 require "sinatra"
+require 'sinatra/activerecord'
 require 'sinatra/reloader' if development?
 require "did_you_mean" if development?
 require 'giphy'
@@ -6,6 +7,7 @@ require 'httparty'
 require 'twilio-ruby'
 require 'api-ai-ruby'
 require 'json'
+require_relative './models/task'
 
 enable :sessions
 
@@ -70,7 +72,137 @@ get "/state" do
   session["question"] + session["choices"].to_s
 end
 
+get "/tasks"  do
+  items = Task.all.order(score: :desc)
+  items.empty?.to_s + " " + checkBoardSize().to_s
 
+  # items = Task.all.order(score: :desc).size
+  # items.to_s
+end
+
+get "/destroy"  do
+  Task.delete_all
+end
+
+get "/getMinScore" do
+  addScore("Nate",400)
+  addScore("John",500)
+  addScore("Donna",200)
+  addScore("Mark",100)
+  checkBoardSize().to_s
+  #deleteLastScore()
+end
+
+get "/list_tasks" do
+  list = Task.all.order(score: :desc).last.to_json
+  parsed = JSON.parse(list)
+  parsed["name"].to_s + " " + parsed["score"].to_s + " points"
+end
+
+get "/hash" do
+  #list = Task.all.order(score: :desc).to_json
+  #parsed = JSON.parse(list)
+  # parsed = getScoreBoard()
+  # bs = checkBoardSize()
+  # a = ""
+  # for i in 0..(bs-1)
+  #  a = a + parsed[i]["score"].to_s
+  # end
+  # a
+  #newScore("Douglas",300)
+  leaderboard()
+  #getMinScore().to_s
+end
+
+def printLeaderArray()
+  #"Here's the list of legendary fighters who overpowered the trivia beasts like no other! \n1: Johnny Restless 15000 points \n2: John Doe 12500 points \n3: Jane Doe 11000 points \n4: Michael Scott 10000 points \n5: Muffin Man 9500 points. \nEmbark on your own journey to rise through the ranks!"
+  a = makeLeaderArray()
+  b = "Here's the list of legendary fighters who overpowered the trivia beasts like no other!"
+  bs = checkBoardSize()
+  if bs < 1
+    b = "No warrior was worthy enough to make it to the list yet. Type 'Start Game' to be the first to try!"
+  else
+    a.each.with_index do |item, index|
+    b = b + " \n"+ (index+1).to_s + " - " + item[0] + " " + item[1] + " points"
+    end
+    b = b + "\nEmbark on your own journey to rise through the ranks!"
+  end
+  return b
+end
+
+def makeLeaderArray()
+  a = []
+  bs = checkBoardSize()
+  if bs > 0
+    parsed = getScoreBoard()
+    for i in 0..(bs-1)
+      a.append([parsed[i]["name"],parsed[i]["score"].to_s])
+    end
+  end
+  return a
+end
+
+def getScoreBoard()
+  bs = checkBoardSize()
+  if bs < 1
+    return []
+  else
+    list = Task.all.order(score: :desc).to_json
+    parsed = JSON.parse(list)
+    return parsed
+  end
+end
+
+def addScore(name,scr)
+  if name.is_a?(String) && scr.is_a?(Integer)
+    s = Task.create(name: name, score: scr)
+    return
+  else
+    return
+  end
+end
+
+def checkBoardSize()
+  return Task.all.size
+end
+
+def getMinScore()
+  if Task.all.empty?
+    return 0
+  else
+      list = Task.all.order(score: :desc).last
+      #parsed = JSON.parse(list)
+      score = list["score"]
+      return score
+      #parsed["score"]
+  end
+end
+
+def deleteLastScore()
+  return Task.all.order(score: :desc).last.delete
+end
+
+def newScore(name,scr)
+  if name.is_a?(String) && scr.is_a?(Integer)
+    bs = checkBoardSize()
+    if bs < 5
+      addScore(name,scr)
+      return true
+    else
+      ms = getMinScore()
+      if scr > ms
+        deleteLastScore()
+        addScore(name,scr)
+        return true
+      else
+        return false
+      end
+    end
+  else
+    puts "saveScore failes: Input Error"
+    return false
+  end
+end
 
 get "/sms/incoming" do
   initializeSessions()
@@ -293,7 +425,19 @@ def endgame
 end
 
 def leaderboard
-  return "Here's the list of legendary fighters who overpowered the trivia beasts like no other! \n1: Johnny Restless 15000 points \n2: John Doe 12500 points \n3: Jane Doe 11000 points \n4: Michael Scott 10000 points \n5: Muffin Man 9500 points. \nEmbark on your own journey to rise through the ranks!"
+  a = makeLeaderArray()
+  b = "Here's the list of legendary fighters who overpowered the trivia beasts like no other!"
+  bs = checkBoardSize()
+  if bs < 1
+    b = "No warrior was worthy enough to make it to the list yet.\nType 'Start Game' to be the first to try!"
+  else
+    a.each.with_index do |item, index|
+    b = b + " \n"+ (index+1).to_s + " - " + item[0] + " " + item[1] + " points"
+    end
+    b = b + "\nEmbark on your own journey to rise through the ranks!"
+  end
+  return b
+  #"Here's the list of legendary fighters who overpowered the trivia beasts like no other! \n1: Johnny Restless 15000 points \n2: John Doe 12500 points \n3: Jane Doe 11000 points \n4: Michael Scott 10000 points \n5: Muffin Man 9500 points. \nEmbark on your own journey to rise through the ranks!"
 end
 
 def newanswer(ans)
@@ -307,6 +451,14 @@ def newanswer(ans)
         return "Correct Answer!\nCurrent Score: " + session["score"].to_s + "\nType 'Next Question' to continue!"
       else
         message = "Incorrect Answer!\nFinal Score: " + session["score"].to_s + "\nCorrect answer was " + session["answer"] + "\nIf you want more just type 'New Game' again and maybe you will get lucky this time!"
+        if session["name"] == "" or session["name"].nil?
+          message = message + "\nAlso don't forget to set your name if you want to make it to the leaderboard."
+        else
+          bool = newScore(session["name"],session["score"])
+          if bool
+            message = message + "\nType 'Leaderboard' to see your name on the wall!"
+          end
+        end
         resetGame()
         return message
       end

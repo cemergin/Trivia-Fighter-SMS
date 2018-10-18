@@ -12,6 +12,10 @@ gem 'faraday', '~> 0.9'
 gem 'jwt', '~> 1.0'
 gem 'rake'
 
+gem 'activerecord'
+gem 'pg'
+gem 'sinatra-activerecord' # excellent gem that ports ActiveRecord for Sinatra
+
 group :development do
   gem "better_errors"
 end
