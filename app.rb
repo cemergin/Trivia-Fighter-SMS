@@ -325,6 +325,7 @@ $difficulty = ["easy", "medium"] #"hard"]
 $question_type = ["boolean","multiple"]
 $category = [9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28]
 
+#Gets question from Open Trivia Database using parameters
 def get_question(amount, cat, diff, typ)
   if $difficulty.include?(diff) && $question_type.include?(typ) && $category.include?(cat) && amount.is_a?(Integer)
     responce = HTTParty.get("https://opentdb.com/api.php?amount=" + amount.to_s + "&category=" + cat.to_s + "&difficulty=" + diff + "&type=" + typ)
@@ -341,6 +342,7 @@ def get_question(amount, cat, diff, typ)
   end
 end
 
+#Returns question string from Open Trivia DB json responce
 def get_query(question)
     if question.nil? || question.empty?
       return nil
@@ -354,6 +356,7 @@ def get_query(question)
     end
   end
 
+#Returns answer string from Open Trivia DB json responce
 def get_answer(question)
     if question.nil? || question.empty?
       return nil
@@ -367,6 +370,7 @@ def get_answer(question)
     end
 end
 
+#Returns choices array from Open Trivia DB json responce
 def get_choices(question)
   choi = []
   if question.nil? || question.empty?
@@ -384,6 +388,7 @@ def get_choices(question)
   end
 end
 
+#Function migrated from older project
 def determine_answer(ans,choi)
   for i in 0..3
     if choi[i] == ans
@@ -393,6 +398,7 @@ def determine_answer(ans,choi)
   end
 end
 
+#Converts index of array to characters A,B,C,D
 def index_to_choi(int)
   case int
   when 0
@@ -410,6 +416,7 @@ end
 
 # INTENT FUNCTIONS
 
+#Gets intent name as string and returns necessary responce string using functions below
 def determineResponce(body)
   message = ""
   intentName = getIntentName(body)
@@ -569,6 +576,7 @@ end
 
 # SESSION FUNCTIONS
 
+#Setter Function for session["game"]
 def setGameState(bool)
   if !!bool == bool
     session["game"] = bool
@@ -577,6 +585,7 @@ def setGameState(bool)
   end
 end
 
+#Setter Function for session["qload"]
 def setQLoad(bool)
   if !!bool == bool
     if session["game"] == true
@@ -590,6 +599,7 @@ def setQLoad(bool)
   end
 end
 
+#Increases session["score"] by the amount of scr
 def increaseScore(scr)
   if (!scr.is_a?(Integer)) || scr <= 0
     puts "increaseScore failed: Incorrect scr"
@@ -600,6 +610,7 @@ def increaseScore(scr)
   end
 end
 
+#Setter Function for session["name"]
 def setPlayerName(str)
   if str.nil? || (!str.is_a?(String)) || str == ""
     puts "setPlaerName Failed: Incorrect str"
@@ -610,6 +621,7 @@ def setPlayerName(str)
   end
 end
 
+#Setter Function for session["answer"]
 def setAnswer(ans)
   if !ans.is_a?(String)
     puts "setAnswer Failed: Incorrect ans"
@@ -621,6 +633,7 @@ def setAnswer(ans)
   end
 end
 
+#Setter Function for session["choices"] which is an array
 def setChoices(chs)
   if chs.is_a?(Array)
     session["choices"] = chs
@@ -631,6 +644,7 @@ def setChoices(chs)
   end
 end
 
+#Setter Function for session["question"]
 def setQuestion(quest)
   if quest.is_a?(String)
     session["question"] = quest
@@ -641,16 +655,19 @@ def setQuestion(quest)
   end
 end
 
+#Resets session["score"], session["game"], session["qload"]
 def resetGame()
   session["score"] = 0
   session["game"] = false
   session["qload"] = false
 end
 
+#Sets session["time"] to Time.new()
 def setTime()
   session["time"] = Time.new()
 end
 
+#Initializes session variables
 def initializeSessions()
   if session["score"].nil?
     session["score"] = 0
