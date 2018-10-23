@@ -128,6 +128,7 @@ end
 
 # FUNCTIONS FOR DATABASE OPERATIONS
 
+#Return message string with using the data leaderboard
 def printLeaderArray()
   #"Here's the list of legendary fighters who overpowered the trivia beasts like no other! \n1: Johnny Restless 15000 points \n2: John Doe 12500 points \n3: Jane Doe 11000 points \n4: Michael Scott 10000 points \n5: Muffin Man 9500 points. \nEmbark on your own journey to rise through the ranks!"
   a = makeLeaderArray()
@@ -144,6 +145,7 @@ def printLeaderArray()
   return b
 end
 
+#Returns an array of arrays where each enrty
 def makeLeaderArray()
   a = []
   bs = checkBoardSize()
@@ -156,6 +158,7 @@ def makeLeaderArray()
   return a
 end
 
+#Returns parsed list from database
 def getScoreBoard()
   bs = checkBoardSize()
   if bs < 1
@@ -167,6 +170,7 @@ def getScoreBoard()
   end
 end
 
+#Adds Score to Leaderboard database
 def addScore(name,scr)
   if name.is_a?(String) && scr.is_a?(Integer)
     s = Task.create(name: name, score: scr)
@@ -176,10 +180,12 @@ def addScore(name,scr)
   end
 end
 
+#Returns the number of entries on leaderboard database
 def checkBoardSize()
   return Task.all.size
 end
 
+#Returns the score with the minimum value from leaderboard database
 def getMinScore()
   if Task.all.empty?
     return 0
@@ -192,10 +198,12 @@ def getMinScore()
   end
 end
 
+#Deletes entry with the minimum score value
 def deleteLastScore()
   return Task.all.order(score: :desc).last.delete
 end
 
+#Adds new entry to database if the new entry qualifies
 def newScore(name,scr)
   if name.is_a?(String) && scr.is_a?(Integer)
     bs = checkBoardSize()
@@ -232,6 +240,7 @@ end
 
 # DIALOGFLOW STUFF
 
+#Returns parameters using DialogFlow responce
 def getParameters(responce)
   if responce.nil? || responce.empty?
     puts "Cannot get Parameters: Responce is nil"
@@ -241,6 +250,7 @@ def getParameters(responce)
   end
 end
 
+#Returns Intent name using Dialogflow responce
 def getIntentName(responce)
   if responce.nil? || responce.empty?
     puts "Cannot get IntentName: Responce is nil"
@@ -250,6 +260,7 @@ def getIntentName(responce)
   end
 end
 
+#Returns name entered by user from Diagloflow responce
 def getName(responce)
   if responce.nil? || responce.empty?
     puts "Cannot get Name: Responce is nil"
@@ -264,6 +275,7 @@ def getName(responce)
   end
 end
 
+#Returns value of answer by user from Dialogflow responce
 def getAnswer(responce)
   if responce.nil? || responce.empty?
     puts "Cannot get Answer: Responce is nil"
@@ -278,6 +290,7 @@ def getAnswer(responce)
   end
 end
 
+#Returns
 def getMessage(responce)
   if responce.nil? || responce.empty?
     puts "Cannot get Message: Responce is nil"
@@ -294,6 +307,7 @@ end
 
 # TIME RELATED STUFF
 
+#Checks time difference between to datetime objects and returns true if difference smaller than 2 minutes
 def checkTimeDiff(t_start,t_end)
   t1 = t_start.to_i
   t2 = t_end.to_i
