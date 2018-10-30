@@ -12,6 +12,8 @@ Final Command List: New Game, Next Question, Answer is A, Repeat Question, Rules
 
 Technologies Involved: Ruby, Sinatra, Dialogflow, Twilio, Heroku, Postgres, httparty
 
+For further documentation check: http://integratedinnovation.xsead.cmu.edu/gallery/projects/trivia-fighter-turbo
+
 Gameplay Demo:
 
 ![Screenshot](https://github.com/cemergin/TRIVIA-FIGHTER-TURBO/blob/master/images/1.png)
