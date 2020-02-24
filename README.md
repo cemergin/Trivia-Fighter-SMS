@@ -26,7 +26,7 @@ So with Trivia Fighter; which initially started as a voice-activated Alexa skill
 
 If we look at today's trivia games that can be found on each and every platform, Trivia Fighter Turbo is quite simple. It doesn't have hotlines, money prizes or crazy visual effects. It just uses the relatively small command set to present you a simple but robust gaming experience. 
 
-#Process
+# Process
 The idea of the project developed after I stumbled upon a website called Open Trivia DB; a free-to-use and user-contributed trivia database. The website provided a simple API to retrieve trivia questions from the main database. So the development process started when I started playing around with their API using the infamous Ruby gem httparty. 
 
 https://opentdb.com/api_config.php
@@ -49,7 +49,7 @@ In the third code snippet, you can observe the function that is called when a "N
 
 Lastly, you can find the full list of intents I've implemented on Dialogflow.
 
-#Product
+# Product
 Final form of the project turned out to be really cool. I actually played it during my trip for the mini break!
 
 You can start a new game, answer as much questions as you possibly can, get your name on the leaderboard and actually see how you did compared to other people. 
@@ -64,14 +64,14 @@ Technologies Involved: Ruby, Sinatra, Dialogflow, Twilio, Heroku, Postgres, http
 
 You can check the screenshots and the video to get an idea of the gameplay. 
 
-#Reflection
+# Reflection
 First of all, I really had a lot of fun while working on this project. That is the reason I spent extra time to implement additional features like leaderboard database and timed rounds that made the project a little more market ready. 
 
 I learnt to successfully incorporate databases to my web applications, use Google's Dialogflow API to capture user intent and how hard it is to code an Alexa skill. The trivia knowledge I gained while testing and debugging was an additional benefit. 
 
 The current gameplay still has room for more spice and dazzle. If I had a little more time I could have experimented with adding features like GIF's, Easter Eggs, better conversational design and a more intricate question engine.
 
-#Gameplay Demo:
+# Gameplay Demo:
 
 ![Screenshot](https://github.com/cemergin/TRIVIA-FIGHTER-TURBO/blob/master/images/1.png)
 
